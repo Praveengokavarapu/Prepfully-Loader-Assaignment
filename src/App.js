@@ -1,25 +1,43 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import LoadingComponent from './components/LoadingComponent';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [loadingPercentage, setLoadingPercentage] = useState(0);
+  const [loadingPaused, setLoadingPaused] = useState(false);
+
+  useEffect(() => {
+    if (!loadingPaused) {
+      const timer = setInterval(() => {
+        setLoadingPercentage((prevPercentage) => {
+          const newPercentage = prevPercentage + 10;
+          return newPercentage > 100 ? 0 : newPercentage;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [loadingPaused]);
+
+  const handleStartLoading = () => {
+    setLoadingPaused(false);
+  };
+
+  const handlePauseLoading = () => {
+    setLoadingPaused(true);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      <h1>Loader Component</h1>
+      <LoadingComponent
+        percentage={loadingPercentage}
+        onStart={handleStartLoading}
+        onPause={handlePauseLoading}
+      />
+      <h1>Prepfully helps you Crack your Dream Job </h1>
     </div>
   );
-}
+};
 
 export default App;
